@@ -3,7 +3,6 @@ package com.kieronquinn.app.simnumbersetter.ui.screens.main
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import androidx.core.net.toUri
 
 abstract class MainViewModel : ViewModel() {
 
@@ -22,6 +22,7 @@ abstract class MainViewModel : ViewModel() {
     abstract val number: StateFlow<String?>
     abstract fun onNumberChanged(newNumber: String)
     abstract fun onSaveClicked()
+    abstract fun onReload()
     abstract fun onMenuItemClicked(context: Context, id: Int)
 
     sealed class State {
@@ -76,6 +77,10 @@ class MainViewModelImpl(
         save(number.value ?: "")
     }
 
+    override fun onReload() {
+        load()
+    }
+
     override fun onMenuItemClicked(context: Context, id: Int) {
         val url = when(id) {
             R.id.menu_github -> URL_GITHUB
@@ -84,7 +89,7 @@ class MainViewModelImpl(
         }
         try {
             context.startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
+                data = url.toUri()
             })
         }catch (e: ActivityNotFoundException) {
             //Nothing can be done
