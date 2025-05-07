@@ -17,7 +17,7 @@ class PhoneNumberSetterService: IPhoneNumberSetter.Stub() {
     override fun setLine1Number(number: String, onComplete: Message?): Boolean {
         var tag = phone.line1AlphaTag
         if(tag.isNullOrEmpty()){
-            tag = "Voice Line 1"
+            tag = ""
         }
         return phone.setLine1Number(tag, number, onComplete)
     }
